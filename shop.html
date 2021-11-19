@@ -398,7 +398,38 @@
 
       });
 
+      $("div#shopAll").children().children("h2").children("button").on("click", function(e){
+        e.preventDefault();
+        var productName = e.target.previousSibling.text;
+        addToCart(productName);
+      });
+
     });
+
+    function addToCart(name){
+      var items = new Array();
+      var qty = 1;
+      var productSearchResult = search(products, "Name", name);
+      var price = productSearchResult[0].Price;
+      var image = productSearchResult[0].Image;
+
+      if (typeof (Storage) !== "undefined") {
+        if (localStorage.getItem("Items") != null) {
+          items = JSON.parse(localStorage.getItem("Items"));
+          var index = items.findIndex(x => x.name === name);
+          if (index != -1) {
+            quantity = items.find(x => x.name === name).quantity;
+            items.splice(index, 1);
+            qty += quantity;
+          }
+        }
+        var item = { "name": name, "image": image, "price": price, "quantity": qty };
+        items.push(item);
+        alert(`${item.name} added to cart.`);
+        localStorage.setItem("Items", JSON.stringify(items));
+      }
+    }
+
   </script>
 
 </body>
